@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify
 import json
 import requests
 from datetime import datetime, timedelta
+from better_profanity import profanity  # Import für Profanitätsfilter
+import random  # For generating random responses
 
 
 # Class-based application configuration
@@ -29,7 +31,7 @@ CHANNEL_FILE = 'messages.json'
 CHANNEL_TYPE_OF_SERVICE = 'aiweb24:chat'
 
 # Maximum number of messages to store
-MAX_MESSAGES = 1
+MAX_MESSAGES = 5
 
 # Maximum message age (e.g., 1 day)
 MAX_AGE = timedelta(days=1)
@@ -68,6 +70,48 @@ def save_messages(messages):
 
     with open(CHANNEL_FILE, 'w') as f:
         json.dump(messages, f)
+
+
+# Profanity check function
+def contains_profanity(message_content):
+    return profanity.contains_profanity(message_content)
+
+
+# Function to generate a response based on message content
+def generate_response(message_content):
+    # Keyword-based responses
+    if 'redstone' in message_content.lower():
+        return "Did someone say Redstone? 🪄 Have you tried creating a hidden door yet?"
+    elif 'help' in message_content.lower():
+        return "Need help? Check out the Redstone wiki or ask fellow crafters here!"
+    elif 'minecraft' in message_content.lower():
+        return "Minecraft rocks! What's your favorite biome? ⛰️🌲🏝️"
+    elif 'build' in message_content.lower():
+        return "Building in Minecraft is an art! What's your next project?"
+    elif 'creative' in message_content.lower():
+        return "Creative mode is perfect for testing new designs! What have you built recently?"
+    elif 'survival' in message_content.lower():
+        return "Survival mode is always a challenge! Have you found any cool caves?"
+    elif 'ender' in message_content.lower():
+        return "The Ender Dragon is no joke! Have you defeated it yet? 🐉"
+    elif 'diamond' in message_content.lower():
+        return "Ah, diamonds! 💎 It's always a good day when you find those!"
+    elif 'portal' in message_content.lower():
+        return "Portals are magical! Have you built a Nether portal yet? 🌋"
+
+    # Randomized fun messages
+    random_responses = [
+        "Keep crafting, keep exploring! 🚀",
+        "Remember: Diamonds are best found at lower levels! 💎",
+        "Got any Redstone puzzles to share? 🤔",
+        "Anyone tried building a Redstone elevator yet? 🏢",
+        "Time to light up that dark cave with some Redstone-powered lamps! 💡",
+        "How about setting up a secret passage with some sticky pistons? 🤫",
+        "Stay creative, and the possibilities are endless! 🌟",
+        "Is anyone else thinking about building an epic castle? 🏰"
+    ]
+    return random.choice(random_responses)
+
 
 
 @app.cli.command('register')
@@ -141,19 +185,23 @@ def send_message():
     # Check if message is present
     message = request.json
     if not message:
-        return "No message", 400
+        return jsonify({"error": "No message"}), 400
     if 'content' not in message:
-        return "No content", 400
+        return jsonify({"error": "No content"}), 400
     if 'sender' not in message:
-        return "No sender", 400
+        return jsonify({"error": "No sender"}), 400
     if 'timestamp' not in message:
-        return "No timestamp", 400
+        return jsonify({"error": "No timestamp"}), 400
     if 'extra' not in message:
         extra = None
     else:
         extra = message['extra']
 
-    # Add message to messages
+    # Check for inappropriate content
+    if contains_profanity(message['content']):
+        return jsonify({"error": "Message contains inappropriate content"}), 400
+
+    # Add the user's message to the message list
     messages = read_messages()
     messages.append({
         'content': message['content'],
@@ -161,13 +209,26 @@ def send_message():
         'timestamp': message['timestamp'],
         'extra': extra,
     })
+
+    # Generate a response from the server
+    response_content = generate_response(message['content'])
+    server_response = {
+        'content': response_content,
+        'sender': "Channel Bot",  # Indicate it's from the bot
+        'timestamp': datetime.now().isoformat(),
+        'extra': None
+    }
+    messages.append(server_response)  # Add the bot's response to the messages
+
+    # Save the updated message list
     save_messages(messages)
-    return "OK", 200
+    return jsonify({"status": "OK"}), 200
 
 
 # Start development web server
 # run flask --app channel.py register
 # to register channel with hub
-
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
+
+
