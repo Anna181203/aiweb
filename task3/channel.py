@@ -161,7 +161,7 @@ def home_page():
     # Define the welcome message
     welcome_message = {
         "content": "Welcome to the Minecraft - Cool Redstone Craftings channel! 🎮✨\n"
-                   "Here, you can share your amazing Redstone creations and discuss with other Minecraft enthusiasts. "
+                   "Here, you can share your AMAZING Redstone creations and discuss with other Minecraft enthusiasts. "
                    "Please be respectful, have fun, and explore all the creative possibilities in Minecraft!",
         "sender": "System",
         "timestamp": datetime.now().isoformat(),  # Current timestamp
