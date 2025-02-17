@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine</title>
+    <style>
+        /* Full viewport centered layout */
+        body {
+            background-color: #f0f8ff; /* Light blue */
+            font-family: Arial, sans-serif;
+            display: flex; /* Enables Flexbox */
+            justify-content: center; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
+            text-align: center; /* Center text inside elements */
+        }
+
+        .container {
+            max-width: 600px; /* Limit the width of the content */
+        }
+
+        .header {
+            display: inline-block;
+            background-color: darkgrey; /* Dark grey background */
+            padding: 15px 20px; /* Adjust padding to make the rectangle slightly bigger */
+            margin-bottom: 50px; /* Increase margin to fix overlap */
+            border: none; /* Remove the border */
+            border-radius: 5px; /* Optional: slightly round the corners */
+            transform: scale(2); /* Doubles the size of the header */
+        }
+
+        .header span {
+            font-size: 2rem; /* Large font size */
+            margin: 0 5px;
+            display: inline-block;
+        }
+
+        .header .a { color: red; font-family: 'Courier New', Courier, monospace; transform: translateY(-10px) rotate(-10deg); }
+        .header .n1 { color: orange; font-family: Georgia, serif; transform: translateY(5px) rotate(8deg); }
+        .header .n2 { color: yellow; font-family: 'Times New Roman', Times, serif; transform: translateY(-15px) rotate(-5deg); }
+        .header .i { color: green; font-family: Verdana, sans-serif; transform: translateY(8px) rotate(12deg); }
+        .header .k { color: blue; font-family: Tahoma, sans-serif; transform: translateY(-8px) rotate(-12deg); }
+        .header .e { color: purple; font-family: 'Comic Sans MS', cursive; transform: translateY(12px) rotate(5deg); }
+
+        /* Subtitle styling */
+        .subtitle {
+            color: darkgrey; /* Match the rectangle's background color */
+            font-size: 0.9rem; /* Smaller subtitle font size */
+            margin-top: -10px; /* Pull subtitle closer to the rectangle */
+            margin-bottom: 40px; /* Add space between subtitle and search bar */
+            font-style: italic; /* Italicize subtitle for style */
+        }
+
+        /* Input box styling */
+        input[type="text"] {
+            width: 300px; /* Wider input field */
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        /* Button styling */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF; /* Blue button */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <span class="a">A</span>
+            <span class="n1">n</span>
+            <span class="n2">n</span>
+            <span class="i">i</span>
+            <span class="k">k</span>
+            <span class="e">e</span>
+        </div>
+
+        <!-- Subtitle -->
+        <p class="subtitle">Search Engine by Anna, Nina and Kevin</p>
+
+        <!-- Search Form -->
+        <form action="/search" method="get">
+            <input type="text" name="q" placeholder="Enter your query" required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</body>
+</html>
