@@ -13,19 +13,39 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <script type="text/babel">
-
+        // ChannelList component fetches channel data from the API
         function ChannelList() {
-            // React component that shows a channel list
-            // content is fetched from the university hub (works only on university network, use VPN)
-            //
             const [channels, setChannels] = React.useState([]);
+            const [isLoading, setIsLoading] = React.useState(true);
+            const [error, setError] = React.useState(null);
 
             React.useEffect(() => {
-                // Fetch list of channels
-                fetch("http://vm146.rz.uos.de/hub/channels") // university hub
-                    .then(response => response.json())
-                    .then(data => setChannels(data.channels));
-            }, []);  // empty list here means that this effect will run only once (you can add a variable to run it on change)
+                // Fetch channel list data
+                fetch("http://vm146.rz.uos.de/hub/channels")
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        setChannels(data.channels);
+                        setIsLoading(false);
+                    })
+                    .catch(error => {
+                        setError(error);
+                        setIsLoading(false);
+                    });
+            }, []);  // Empty dependency array means this effect runs once when the component mounts.
+
+            // Conditional rendering based on loading state
+            if (isLoading) {
+                return <p>Loading channels...</p>;
+            }
+
+            if (error) {
+                return <p>Error: {error.message}</p>;
+            }
 
             return (
                 <div>
@@ -41,13 +61,14 @@
             );
         }
 
-        // main code: render the ChannelList component, add more components here
+        // Main code: Render the ChannelList component
         ReactDOM.render(
             <div>
-                <h1>Chat client: List of channels</h1>
+                <h1>Chat Client: List of Channels</h1>
                 <ChannelList />
             </div>,
-            document.getElementById('root'));
+            document.getElementById('root')
+        );
     </script>
 </body>
 </html>
